@@ -18,9 +18,9 @@
   document.documentElement.setAttribute("data-theme", t); })();
 </script>
 <style>
-@font-face{font-family:Pretendard;src:url('/api/fonts/Pretendard-ko.woff2') format('woff2-variations'),url('fonts/Pretendard-ko.woff2') format('woff2-variations');font-weight:45 920;font-style:normal;font-display:swap}
-@font-face{font-family:"Pretendard Full";src:url('/api/fonts/PretendardVariable.woff2') format('woff2-variations'),url('fonts/PretendardVariable.woff2') format('woff2-variations');font-weight:45 920;font-style:normal;font-display:swap}
-@font-face{font-family:"BM JUA";src:url('/api/fonts/BMJUA.woff2') format('woff2'),url('fonts/BMJUA.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Pretendard;src:url('/api/fonts/Pretendard-ko.woff2') format('woff2-variations'),url('fonts/Pretendard-ko.woff2') format('woff2-variations');font-weight:45 920;font-style:normal;font-display:block}
+@font-face{font-family:"Pretendard Full";src:url('/api/fonts/PretendardVariable.woff2') format('woff2-variations'),url('fonts/PretendardVariable.woff2') format('woff2-variations');font-weight:45 920;font-style:normal;font-display:block}
+@font-face{font-family:"BM JUA";src:url('/api/fonts/BMJUA.woff2') format('woff2'),url('fonts/BMJUA.woff2') format('woff2');font-weight:400;font-style:normal;font-display:block}
 
 /* 레이아웃 개념: 합주실 벽에 붙은 포스터와 셋리스트. 모든 것이 종이 위의 스티커다.
    한 가지 시각 세계만 쓴다(종이 바탕) — 어둡게 바뀌지 않는다. */
@@ -1217,6 +1217,49 @@ html.intro-on::-webkit-scrollbar{display:none}
 @keyframes edgeFlashB{0%{opacity:0}18%{opacity:.6}40%{opacity:.45}100%{opacity:0}}
 
 @media (prefers-reduced-motion:reduce){.sheet.done .edge{animation:none!important}}
+
+/* ── 관리자 숫자 — 밤 테마에서 글씨가 바탕에 묻히지 않게 ── */
+:root[data-theme="night"] .num2 b{color:var(--title)!important}
+
+/* ── 머리말 로고 — 소개 화면은 크게, 나머지 화면은 한 단계 작게 ── */
+.top:not([data-intro]) .mark{gap:9px}
+.top:not([data-intro]) .mark img.ico{width:36px;height:36px;border-radius:11px}
+.top:not([data-intro]) .mark img.word{height:44px}
+@media (max-width:560px){.top:not([data-intro]) .mark{gap:7px}.top:not([data-intro]) .mark img.ico{width:31px;height:31px;border-radius:9px}.top:not([data-intro]) .mark img.word{height:38px}}
+
+/* ── 메인·추억·관리자도 PC에서 가로를 넓게 ── */
+@media (min-width:1200px){#s-home .wrap,#s-memories .wrap,#s-admin .wrap{max-width:1400px}#s-home .two{grid-template-columns:minmax(0,1fr) 380px;gap:40px}}
+
+/* ── 검색 줄 — 더 크게, 내려도 늘 위에 붙어 있게 ── */
+.tools{position:sticky;top:0;z-index:20;padding:12px 0;margin-top:16px;transition:box-shadow .2s}
+.tools::before{content:"";position:absolute;inset:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));z-index:-1;background:var(--paper);opacity:0;transition:opacity .2s;border-bottom:2.5px dashed transparent}
+.tools.stuck::before{opacity:.97;border-bottom-color:color-mix(in srgb,var(--line) 30%,transparent)}
+.tools .search{height:50px;padding:0 16px;border-radius:14px}
+.tools .search input{font-size:15.5px}
+.tools .search svg{width:21px;height:21px}
+.tools > .sbtn{height:50px;padding-top:0;padding-bottom:0}
+.tools .seg button{min-height:44px}
+@media (max-width:560px){.tools{gap:8px;padding:10px 0}.tools .search{height:46px;order:2;flex:1 1 100%}.tools > .sbtn{height:46px}.tools .seg{order:1}#btn-filter{order:1;margin-left:auto}}
+
+/* ── 글자 끌어서 고르기는 합주 설명과 곡 설명에서만 ── */
+body{-webkit-user-select:none;user-select:none}
+.evcard .desc,.song .desc2,input,textarea,select{-webkit-user-select:text;user-select:text}
+
+/* ── 남의 자리가 양도 가능인지 — 자리 끝에 자물쇠 ── */
+.seat .lk{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;flex:none;margin-left:1px;color:#1B1320}
+.seat .lk svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.seat .lk{opacity:.6}
+.seat.yield{border-style:dashed}
+.seat .fl{display:none!important}
+.songbar .sum .lg{display:inline-flex;align-items:center;gap:10px;margin-left:12px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.songbar .sum .lg span{display:inline-flex;align-items:center;gap:4px}
+.songbar .sum .lg .lk{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;color:var(--ink)}
+.songbar .sum .lg .lk svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+@media (max-width:560px){.songbar .sum .lg{display:none}}
+
+/* ── 차 있는 자리의 파트 이름 — 흐린 글씨 대신 작은 명찰로. 닉네임과 색이 아니라 모양으로 구분 ── */
+.seat.taken .pt,:root[data-theme="night"] .seat.taken .pt{background:rgba(255,255,255,.62);color:rgba(27,19,32,.86);border-radius:6px;padding:2px 5px 3px 6px;font-size:12px;line-height:1}
 
 
 /* ══════════════════════════════════════════════
@@ -2953,6 +2996,9 @@ function renderHomeFeed(){
       :`<div class="fi"><span><b>${esc(nameOf(s.proposerId)||'누군가')}</b>님이 <b>${esc(s.title)}</b>를 올렸습니다</span><time>${t}</time></div>`; }).join('');
 }
 
+/* 검색 줄이 위에 붙었을 때만 바탕을 깝니다 */
+addEventListener('scroll',()=>{ const t=document.getElementById('tools'); if(!t||curScreen!=='home') return; t.classList.toggle('stuck', t.getBoundingClientRect().top<=0.5 && scrollY>40); },{passive:true});
+
 /* ══════════════════════════════════════════════
    합주 상세 — 머리 · 추천곡 · 자리 · 규칙 · 사이드
    ══════════════════════════════════════════════ */
@@ -3076,12 +3122,16 @@ function seatHTML(song,i,ev,anim){
   const st=song.seats[i], part=st.part, who=st.who, ic=svg(part), managing=S.managing&&isAdmin(), locked=ev.done||(deadlinePassed(ev)&&!canEditEvent(ev));
   if(who!=null){ const mine=who===S.meId&&loggedIn(); const nm=nameOf(who);
     const title=mine?`내 자리 · ${st.yield?'양도 가능':'양도 불가능'} · 눌러서 바꾸기`:st.yield?`${nm} 님이 양도 가능으로 잡아둔 자리입니다. 눌러서 넘겨받기`:`${nm} 님이 맡았습니다`;
-    return `<button class="seat taken ${mine?'mine':colorOf(who)} ${anim?'in':''} ${st.yield?'yield':''}" data-i="${i}" title="${esc(managing?`${part} 자리에 사람을 넣거나 빼기`:title)}">${st.yield&&!mine?'<span class="fl">양도 가능</span>':''}${ic}<span class="pt">${esc(part)}</span>${esc(nm)}</button>`; }
+    return `<button class="seat taken ${mine?'mine':colorOf(who)} ${anim?'in':''} ${st.yield?'yield':''}" data-i="${i}" title="${esc(managing?`${part} 자리에 사람을 넣거나 빼기`:title)}">${ic}<span class="pt">${esc(part)}</span>${esc(nm)}${lockIcon(st.yield)}</button>`; }
   if(managing) return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 사람을 넣거나 빼기">${ic}<span class="pt">${esc(part)}</span><span class="plus">+</span></button>`;
   if(loggedIn()){ const [ok,why]=canTake(song,part,S.meId); if(!ok&&why&&!locked) return `<span class="seat locked" data-i="${i}" data-why="${esc(why)}" title="${esc(why)}을 맡고 있어 다른 악기는 들어갈 수 없습니다">${ic}<span class="pt">${esc(part)}</span>들어갈 수 없음</span>`; }
   if(locked) return `<span class="seat locked" data-i="${i}">${ic}<span class="pt">${esc(part)}</span>비어 있음</span>`;
   return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 들어가기">${ic}<span class="pt">${esc(part)}</span><span class="plus">+</span></button>`;
 }
+/* 자물쇠 — 열린 것은 양도 가능, 닫힌 것은 확정 */
+const LOCK_SHUT='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const LOCK_OPEN='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.8-1.3"/></svg>';
+function lockIcon(open){ return `<span class="lk ${open?'open':'shut'}" aria-label="${open?'양도 가능':'양도 불가능'}">${open?LOCK_OPEN:LOCK_SHUT}</span>`; }
 function songTools(song,ev){
   const t=[]; if(safeUrl(song.yt)) t.push(`<a class="sbtn yt" href="${esc(safeUrl(song.yt))}" target="_blank" rel="noopener noreferrer" title="유튜브에서 원곡 열기">${YT}YouTube</a>`);
   t.push(`<button class="sbtn" data-s="log" title="이 곡의 변경 기록 보기"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg>로그</button>`);
@@ -3112,7 +3162,7 @@ function songCounts(ev){
   const ss=songsOf(ev.id); const n={all:ss.length,open:0,mine:0,done:0}; let empty=0;
   ss.forEach(s=>{ if(isDone(s)) n.done++; else n.open++; if(loggedIn()&&s.seats.some(x=>x.who===S.meId)) n.mine++; empty+=s.seats.filter(x=>x.who==null).length; });
   document.querySelectorAll('#songseg button').forEach(b=>{ b.querySelector('b').textContent=n[b.dataset.f]; b.classList.toggle('on',b.dataset.f===S.songFilter); b.style.display=(b.dataset.f==='mine'&&!loggedIn())?'none':''; });
-  document.getElementById('songsum').textContent=`빈 자리 ${empty}개`;
+  document.getElementById('songsum').innerHTML=`빈 자리 ${empty}개<span class="lg"><span><i class="lk open">${LOCK_OPEN}</i>양도 가능</span><span><i class="lk">${LOCK_SHUT}</i>확정</span></span>`;
   document.getElementById('songs-count').textContent=ss.length?`${ss.length}곡${n.done?` · ${n.done}곡 각 나옴`:''}`:'';
   document.getElementById('songbar').style.display=ss.length>=4?'':'none';
 }
