@@ -1278,6 +1278,13 @@ body{-webkit-user-select:none;user-select:none}
 .sbtn .pli svg.pl{display:inline-block;vertical-align:baseline;margin:0 3px 0 0;top:var(--plY,4px)}
 .seat > .lk{--icoY:5.1px}.seat > .plus{--icoY:4.45px}
 #songs-acts [data-s="add"]{--plY:5px}
+/* 빈 자리 ⊕ — 가운데 ＋를 글자 대신 선으로. 글꼴마다 ＋ 글자가 뜨는 높이가 달라 동그라미 안에서 내려가 보였음 */
+.seat.empty .plus svg{width:11px;height:11px;display:block;stroke:currentColor;fill:none;stroke-width:3.2;stroke-linecap:round}
+/* 버튼 ＋가 글자 줄 높이를 키우지 않게 — 줄 높이는 글자만으로 정해져야 버튼 안 가운데에 옵니다 */
+.sbtn .pli svg.pl{margin-top:-6px;margin-bottom:-6px}
+.sbtn .pli svg.pl{--plY:-2px}
+#songs-acts [data-s="add"] .pli svg.pl{--plY:-1px}
+#songs-acts [data-s="add"]{padding:10px 20px 11px}
 
 
 /* ══════════════════════════════════════════════
@@ -3141,10 +3148,10 @@ function seatHTML(song,i,ev,anim){
   if(who!=null){ const mine=who===S.meId&&loggedIn(); const nm=nameOf(who);
     const title=mine?`내 자리 · ${st.yield?'양도 가능':'양도 불가능'} · 눌러서 바꾸기`:st.yield?`${nm} 님이 양도 가능으로 잡아둔 자리입니다. 눌러서 넘겨받기`:`${nm} 님이 맡았습니다`;
     return `<button class="seat taken ${mine?'mine':colorOf(who)} ${anim?'in':''} ${st.yield?'yield':''}" data-i="${i}" title="${esc(managing?`${part} 자리에 사람을 넣거나 빼기`:title)}">${ic}<span class="pt">${esc(part)}</span>${esc(nm)}${lockIcon(st.yield)}</button>`; }
-  if(managing) return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 사람을 넣거나 빼기">${ic}<span class="pt">${esc(part)}</span><span class="plus">+</span></button>`;
+  if(managing) return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 사람을 넣거나 빼기">${ic}<span class="pt">${esc(part)}</span><span class="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5v11M6.5 12h11"/></svg></span></button>`;
   if(loggedIn()){ const [ok,why]=canTake(song,part,S.meId); if(!ok&&why&&!locked) return `<span class="seat locked" data-i="${i}" data-why="${esc(why)}" title="${esc(why)}을 맡고 있어 다른 악기는 들어갈 수 없습니다">${ic}<span class="pt">${esc(part)}</span>들어갈 수 없음</span>`; }
   if(locked) return `<span class="seat locked" data-i="${i}">${ic}<span class="pt">${esc(part)}</span>비어 있음</span>`;
-  return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 들어가기">${ic}<span class="pt">${esc(part)}</span><span class="plus">+</span></button>`;
+  return `<button class="seat empty" data-i="${i}" title="${esc(part)} 자리에 들어가기">${ic}<span class="pt">${esc(part)}</span><span class="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5v11M6.5 12h11"/></svg></span></button>`;
 }
 const PLUS='<svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg>';
 /* 자물쇠 — 열린 것은 양도 가능, 닫힌 것은 확정 */
