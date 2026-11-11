@@ -1296,6 +1296,10 @@ body{-webkit-user-select:none;user-select:none}
 #songs-acts [data-s="add"]{padding:10.5px 20px}
 .seat .plus svg,.seat .lk svg{top:0}
 .seat .lk svg{top:-.5px}
+/* 날짜 미정 — 「미정」 한 단어를 칸 가운데 크게 */
+.erow .date.tbd{display:grid;place-items:center;padding:0;min-height:50px;align-self:center}
+.erow .date.tbd b{font-size:17px;color:var(--ink-2);letter-spacing:-.01em}
+@media (min-width:1100px){.erow{grid-template-columns:62px minmax(0,1fr) 170px auto 22px}}
 
 
 /* ══════════════════════════════════════════════
@@ -1328,6 +1332,12 @@ body{-webkit-user-select:none;user-select:none}
 .band.has-hero h1{color:#F5E7D3}
 .band.has-hero p{color:rgba(245,231,211,.86)}
 @media (max-width:560px){.band.has-hero{padding:22px 16px}}
+/* 소셜 로그인 아이콘 — 테두리·바탕 없이 로고만 */
+.soc-btn .sico,.soc-btn[data-soc="naver"] .sico{border:0;background:none;border-radius:0;width:22px;height:22px}
+.soc-btn .sico img{width:20px;height:20px}
+.linkrow .ico{border:0}
+/* 푸터 로고 — 머리말과 같은 글자 이미지 */
+.pf-brand .pf-word{height:40px;width:auto;display:block;margin-bottom:6px}
 
 </style>
 </head>
@@ -1520,7 +1530,7 @@ body{-webkit-user-select:none;user-select:none}
 <!-- ═══════════ 푸터 (로그인 화면 제외) ═══════════ -->
 <footer class="pf" id="pf">
   <div class="wrap">
-    <div class="pf-brand"><b>합주<i>각</i></b><p>치고 싶은 곡의 파트 자리를 잡고, 자리가 다 차면 합주가 성립합니다.</p></div>
+    <div class="pf-brand"><img class="pf-word" src="img/wordmark.png" alt="합주각"><p>치고 싶은 곡의 파트 자리를 잡고, 자리가 다 차면 합주가 성립합니다.</p></div>
     <div class="pf-col"><h4>합주</h4><a href="#/">합주 둘러보기</a><a href="#/memories">지난 합주</a></div>
     <div class="pf-col"><h4>사용법</h4><a href="#/guide/host">호스트</a><a href="#/guide/join">참가자</a></div>
     <div class="pf-col"><h4>지원</h4><a href="mailto:support.hapjugak@gmail.com" data-mail>문의하기</a><a href="https://github.com/SaAe1101/hapjugak-api" target="_blank" rel="noopener noreferrer">GitHub 저장소</a></div>
@@ -2863,7 +2873,19 @@ function showScreen(name){
   } else { SCREENS.forEach(s=>document.getElementById('s-'+s).classList.toggle('on',s===name)); }
   curScreen=name;
 }
+/* 첫 화면은 글꼴과 로고가 다 온 다음에 엽니다.
+   먼저 열면 글자 없는 화면에서 소개 모션만 먼저 돌아 버려서, 다 보일 때쯤엔 이미 끝나 있었습니다. */
+let assetsReady=false;
+const assetsWait=Promise.race([
+  Promise.all([
+    document.fonts.load('16px "BM JUA"').catch(()=>{}),
+    document.fonts.load('600 16px Pretendard').catch(()=>{}),
+    ...['img/logo.png','img/wordmark.png'].map(src=>new Promise(r=>{ const i=new Image(); i.onload=i.onerror=()=>r(); i.src=src; }))
+  ]),
+  new Promise(r=>setTimeout(r,3000))
+]).then(()=>{ assetsReady=true; document.documentElement.classList.remove('booting'); });
 function route(){
+  if(!assetsReady){ assetsWait.then(route); return; }
   const h=location.hash||'#/';
   renderTops();
   if(h==='#intro'||h==='#/intro'){ showScreen('intro'); window.scrollTo(0,0); introPlay(); armIO(document.getElementById('s-intro')); stepCards.forEach(s=>s.classList.remove('on')); requestAnimationFrame(stepsScroll); document.title='합주각'; return; }
@@ -2980,14 +3002,13 @@ function listEvents(){
 }
 function eventRowHTML(ev){
   const d=toDate(ev.date), ss=songsOf(ev.id), past=isPast(ev)&&!ev.done;
-  const dateBox=d?`<div class="date ${d.getDay()===6?'sat':d.getDay()===0?'sun':''}"><b>${d.getDate()}</b><small>${DAYS[d.getDay()]}</small></div>`:`<div class="date tbd"><b>–</b><small>미정</small></div>`;
+  const dateBox=d?`<div class="date ${d.getDay()===6?'sat':d.getDay()===0?'sun':''}"><b>${d.getDate()}</b><small>${DAYS[d.getDay()]}</small></div>`:`<div class="date tbd"><b>미정</b></div>`;
   const where=[ev.area||'지역 미정', ev.place?(ev.place+(ev.room?' '+ev.room:'')):'합주실 미정', timeRange(ev), ss.length?`곡 ${ss.length}`:'곡 없음'].filter(Boolean).join(' · ');
   const st=ev.done?`<span class="st past">합주 완료</span>`:past?`<span class="st past">지난 합주</span>`:eventFull(ev)?`<span class="st full">모집마감</span>`:`<span class="st">모집중</span>`;
   const badges=(ev.vis==='private'?'<span class="stk ink">비공개</span>':'')+(ev.hostId===S.meId&&loggedIn()?'<span class="stk y">내가 연 합주</span>':'');
   const people=participantsOf(ev).length, pct=ev.cap?Math.min(100,Math.round(people/ev.cap*100)):0, filled=ss.filter(isDone).length;
-  const host=`<div class="host"><i>${esc((nameOf(ev.hostId)||'?')[0])}</i><span>주최 ${esc(nameOf(ev.hostId)||'—')}</span></div>`;
   const fill=`<div class="fill"><small><span>자리 <b>${people}</b>/${ev.cap}</span><span>${ss.length?`성립 ${filled}/${ss.length}`:'곡 없음'}</span></small><div class="bar"><i class="${pct>=80?'hot':''}" style="width:${pct}%"></i></div></div>`;
-  return `<a class="erow ${past||ev.done?'past':''}" href="${eventLink(ev)}">${dateBox}<div class="t"><h3><span>${esc(ev.title)}</span>${badges}</h3><p>${esc(where)}</p></div>${host}${fill}${st}${CHEV}</a>`;
+  return `<a class="erow ${past||ev.done?'past':''}" href="${eventLink(ev)}">${dateBox}<div class="t"><h3><span>${esc(ev.title)}</span>${badges}</h3><p>${esc(where)}</p></div>${fill}${st}${CHEV}</a>`;
 }
 function renderList(){
   const box=document.getElementById('list-main'); const {tbd,up,past,q}=listEvents();
