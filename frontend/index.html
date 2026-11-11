@@ -1338,6 +1338,9 @@ body{-webkit-user-select:none;user-select:none}
 .linkrow .ico{border:0}
 /* 푸터 로고 — 머리말과 같은 글자 이미지 */
 .pf-brand .pf-word{height:40px;width:auto;display:block;margin-bottom:6px}
+/* 소셜 로그인 버튼은 남의 브랜드라 반듯하게 — 기울이지 않습니다 */
+.auth .soc .sbtn:nth-child(n){transform:none}
+.auth .soc .sbtn:hover{transform:translate(2px,2px)}
 
 </style>
 </head>
@@ -2743,7 +2746,21 @@ async function uploadImage(blob, kind){
     headers: { "Content-Type": blob.type },
     body: blob
   });
-  if (!res.ok) throw new Error("이미지를 올리지 못했습니다 (" + res.status + ")");
+  if (!res.ok){
+    /* S3는 거절 이유를 XML의 <Code>로 알려줍니다. 원인을 바로 알 수 있게 그대로 보여줍니다. */
+    let code = "";
+    try { const m = (await res.text()).match(/<Code>([^<]+)<\/Code>/); if (m) code = m[1]; } catch (e) {}
+    const why = {
+      AccessDenied: "저장소에 쓸 권한이 없습니다",
+      SignatureDoesNotMatch: "업로드 서명이 맞지 않습니다",
+      RequestTimeTooSkewed: "서버 시계가 맞지 않습니다",
+      ExpiredToken: "서버의 저장소 인증이 만료됐습니다",
+      InvalidAccessKeyId: "서버의 저장소 인증 키가 잘못됐습니다",
+      AuthorizationHeaderMalformed: "저장소 지역 설정이 맞지 않습니다"
+    }[code];
+    console.warn("[업로드] S3가 거절했습니다", res.status, code || "(코드 없음)");
+    throw new Error("이미지를 올리지 못했습니다 (" + res.status + (code ? " · " + code : "") + ")" + (why ? " — " + why : ""));
+  }
   return sign.publicUrl;
 }
 
