@@ -1347,6 +1347,26 @@ body{-webkit-user-select:none;user-select:none}
 .fsheet:nth-of-type(odd).enter,.fsheet:nth-of-type(even).enter{--r:0deg}
 .mdl .pick button.on,.mdl .people button.on,.mdl .partpick .stk.on,.pick button.on,.people button.on,.partpick .stk.on{transform:none}
 
+/* ══ 기울기 정리 — 누르거나 읽는 것은 전부 반듯하게 ══
+   남기는 것: 테이프, 「합주각」 도장, 소개 화면의 셋리스트 종이와 이름 스티커, 예시 그림 속 스티커, 띠 장식, 배경 도형, 추억 사진 위 날짜 스티커 */
+.me,.me.btn,.me.btn:hover{transform:none}
+.ticket{transform:none}
+@media (max-width:820px){.ticket{transform:none}}
+.fab,.fab.on{transform:none;rotate:none}
+.seg button.on,.atabs button.on,.gtabs button,.gtabs button:nth-child(n),.gtabs button.on{transform:none}
+.toast{transform:translate(-50%,-140%)}
+.toast.on{transform:translate(-50%,0)}
+.stat,.mem{--r:0deg;transform:none}
+.gcard,.gcard:nth-child(n){transform:none}
+.gcard:hover{transform:translate(3px,3px)}
+.gsteps .gstep:nth-child(n),.gstep{--sr:0deg}
+.gstep .n{transform:none}
+.flow .stk{transform:none}
+.pf-bot .stk{transform:none}
+.cal .d.has:hover{transform:translate(1px,1px)}
+.steps .step{--r:0deg;transform:translateY(70px) scale(.96)}
+.steps .step.on{transform:translateY(0) scale(1)}
+
 </style>
 </head>
 <body>
