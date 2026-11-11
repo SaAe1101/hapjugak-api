@@ -1341,6 +1341,11 @@ body{-webkit-user-select:none;user-select:none}
 /* 소셜 로그인 버튼은 남의 브랜드라 반듯하게 — 기울이지 않습니다 */
 .auth .soc .sbtn:nth-child(n){transform:none}
 .auth .soc .sbtn:hover{transform:translate(2px,2px)}
+/* 입력하는 창은 전부 반듯하게 — 기울기는 장식(스티커·테이프·도장)에만 남깁니다 */
+.mdl,.mdl.auth,.auth{transform:none!important}
+.fsheet,.fsheet:nth-of-type(odd),.fsheet:nth-of-type(even){transform:none;--r:0deg}
+.fsheet:nth-of-type(odd).enter,.fsheet:nth-of-type(even).enter{--r:0deg}
+.mdl .pick button.on,.mdl .people button.on,.mdl .partpick .stk.on,.pick button.on,.people button.on,.partpick .stk.on{transform:none}
 
 </style>
 </head>
