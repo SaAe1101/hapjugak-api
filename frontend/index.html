@@ -1272,6 +1272,9 @@ body{-webkit-user-select:none;user-select:none}
 /* 곡 올리기 — 이 화면의 주인공 버튼이라 한 단계 크게 */
 #songs-acts [data-s="add"]{font-size:16.5px;padding:11px 20px 10px;box-shadow:var(--sh-s)}
 #songs-acts [data-s="add"] svg.pl{width:19px;height:19px}
+/* ＋ 아이콘도 글자 기준선에 붙여서, 기기마다 글자가 뜨는 높이를 따라가게 */
+.sbtn svg.pl{align-self:baseline;top:var(--plY,0px)}
+.seat > .lk{--icoY:4.8px}.seat > .plus{--icoY:4.15px}
 
 
 /* ══════════════════════════════════════════════
