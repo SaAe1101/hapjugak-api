@@ -1273,8 +1273,11 @@ body{-webkit-user-select:none;user-select:none}
 #songs-acts [data-s="add"]{font-size:16.5px;padding:11px 20px 10px;box-shadow:var(--sh-s)}
 #songs-acts [data-s="add"] svg.pl{width:19px;height:19px}
 /* ＋ 아이콘도 글자 기준선에 붙여서, 기기마다 글자가 뜨는 높이를 따라가게 */
-.sbtn svg.pl{align-self:baseline;top:var(--plY,0px)}
-.seat > .lk{--icoY:4.8px}.seat > .plus{--icoY:4.15px}
+/* ＋는 글자와 같은 줄 안에 넣어 기준선에 앉힙니다 — 기기마다 글자가 뜨는 높이를 그대로 따라갑니다 */
+.sbtn .pli{display:inline-block;white-space:nowrap;line-height:1}
+.sbtn .pli svg.pl{display:inline-block;vertical-align:baseline;margin:0 3px 0 0;top:var(--plY,4px)}
+.seat > .lk{--icoY:5.1px}.seat > .plus{--icoY:4.45px}
+#songs-acts [data-s="add"]{--plY:5px}
 
 
 /* ══════════════════════════════════════════════
@@ -1413,7 +1416,7 @@ body{-webkit-user-select:none;user-select:none}
       <div>
         <h1>들어갈 합주,<br><em>각</em> 잡아볼까요?</h1>
         <p>이번 달 열린 합주를 보고, 치고 싶은 곡에 자리를 잡으세요. 자리가 다 차면 그 곡은 성립입니다.</p>
-        <div class="acts"><button class="sbtn primary lg" data-act="new-event"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg>합주 만들기</button><button class="sbtn lg" data-act="howto">사용법 보기</button></div>
+        <div class="acts"><button class="sbtn primary lg" data-act="new-event"><span class="pli"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg>합주 만들기</span></button><button class="sbtn lg" data-act="howto">사용법 보기</button></div>
       </div>
       <div id="band-next"></div>
     </div>
@@ -1422,7 +1425,7 @@ body{-webkit-user-select:none;user-select:none}
       <div class="seg" id="list-seg"></div>
       <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="list-q" placeholder="합주 이름, 지역, 합주실로 찾기" autocomplete="off"></label>
       <button class="sbtn" id="btn-filter" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>필터<span class="fdot" id="fdot"></span></button>
-      <button class="sbtn primary hide-sm" data-act="new-event"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg>합주 만들기</button>
+      <button class="sbtn primary hide-sm" data-act="new-event"><span class="pli"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg>합주 만들기</span></button>
     </div>
 
     <div class="two">
@@ -3188,13 +3191,13 @@ function renderSongs(ev){
   prevOrder=order.map(s=>s.id); songCounts(ev);
   /* 머리 버튼·안내문 */
   const acts=[]; if(isAdmin()&&!ev.done) acts.push(`<button class="sbtn ${S.managing?'ink':''}" data-s="manage">${S.managing?'자리 관리 끄기':'자리 관리'}</button>`);
-  if(!ev.done) acts.push(`<button class="sbtn primary" data-s="add">${PLUS}곡 올리기</button>`);
+  if(!ev.done) acts.push(`<button class="sbtn primary" data-s="add"><span class="pli">${PLUS}곡 올리기</span></button>`);
   document.getElementById('songs-acts').innerHTML=acts.join(' ');
   let note='';
   if(S.managing&&isAdmin()) note=`<div class="notice warn">자리 관리 중입니다. 아무 칸이나 눌러 다른 사람을 넣거나 뺄 수 있습니다.</div>`;
   else if(ev.done) note=`<div class="notice">합주가 끝난 일정입니다. 아래 곡들이 이날 연주한 기록으로 남아 있습니다.</div>`;
   else if(deadlinePassed(ev)) note=`<div class="notice">${fmtMD(ev.deadline)}에 곡 신청이 마감됐습니다. 세트리스트가 확정된 상태입니다.${canEditEvent(ev)?' 주최자와 관리자는 계속 손볼 수 있습니다.':''}</div>`;
-  if(!order.length) note+=`<div class="nothing" style="margin-top:14px"><b>아직 올라온 곡이 없습니다.</b>${ev.done?'':'<button class="sbtn primary" data-s="add" style="margin-top:10px">${PLUS}첫 곡 올리기</button>'}</div>`;
+  if(!order.length) note+=`<div class="nothing" style="margin-top:14px"><b>아직 올라온 곡이 없습니다.</b>${ev.done?'':`<button class="sbtn primary" data-s="add" style="margin-top:10px"><span class="pli">${PLUS}첫 곡 올리기</span></button>`}</div>`;
   document.getElementById('songs-note').innerHTML=note;
 }
 document.getElementById('songseg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; S.songFilter=b.dataset.f; document.querySelectorAll('#songs .song').forEach(el=>el.classList.toggle('hide',!songMatch(SONGS.find(s=>s.id===+el.dataset.id)||{seats:[]}))); songCounts(E(curEvent)); });
